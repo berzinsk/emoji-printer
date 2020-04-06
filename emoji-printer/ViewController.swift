@@ -8,13 +8,25 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, DetailViewControllerDelegate {
+  @IBOutlet weak var textView: UITextView!
+  var emoji = [String]()
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view.
+
   }
 
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == "showDetailSegue", let vc = segue.destination as? DetailViewController {
+      vc.delegate = self
+    }
+  }
 
+  // MARK: - DetailViewControllerDelegate -
+  func add(emoji: String) {
+    self.emoji.append(emoji)
+
+    textView.text = self.emoji.joined(separator: " ")
+  }
 }
-
