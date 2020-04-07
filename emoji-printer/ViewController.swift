@@ -7,14 +7,24 @@
 //
 
 import UIKit
+import Firebase
 
 class ViewController: UIViewController, DetailViewControllerDelegate {
   @IBOutlet weak var textView: UITextView!
   var emoji = [String]()
+  var ref: DatabaseReference!
 
   override func viewDidLoad() {
     super.viewDidLoad()
 
+    ref = Database.database().reference()
+
+    ref.observe(.value) { snapshot in
+      let arrayOfEmoji = snapshot.value as? [String] ?? []
+      self.emoji = arrayOfEmoji
+
+      self.textView.text = self.emoji.joined(separator: " ")
+    }
   }
 
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -26,7 +36,6 @@ class ViewController: UIViewController, DetailViewControllerDelegate {
   // MARK: - DetailViewControllerDelegate -
   func add(emoji: String) {
     self.emoji.append(emoji)
-
-    textView.text = self.emoji.joined(separator: " ")
+    ref.setValue(self.emoji)
   }
 }
